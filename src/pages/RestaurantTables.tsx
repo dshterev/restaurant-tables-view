@@ -8,7 +8,8 @@ import { TableFilters } from '@/components/restaurant/TableFilters';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { Plus, LayoutGrid, RefreshCw } from 'lucide-react';
+import { Plus, LayoutGrid, RefreshCw, ClipboardList } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function RestaurantTables() {
   const [isAdmin] = useState(true); // In real app, this would come from auth context
@@ -115,6 +116,12 @@ export default function RestaurantTables() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Link to="/orders">
+                <Button variant="outline" size="sm">
+                  <ClipboardList className="mr-2 h-4 w-4" />
+                  Поръчки
+                </Button>
+              </Link>
               <Button variant="outline" size="sm" onClick={() => refetch()}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Обнови

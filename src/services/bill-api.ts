@@ -82,11 +82,13 @@ export const billApi = {
     return bill;
   },
 
-  pay: async (billId: number): Promise<Bill> => {
+  pay: async (billId: number, method?: string, cashAmount?: number, cardAmount?: number): Promise<Bill> => {
     await delay(300);
     const bill = mockBills[billId];
     if (!bill) throw new Error('Bill not found');
     bill.status = 'PAID';
+    // In real app, we'd store payment method and amounts
+    console.log('Payment:', { method, cashAmount, cardAmount });
     return bill;
   },
 

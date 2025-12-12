@@ -76,7 +76,7 @@ export default function RestaurantTables() {
   };
 
   const handleOpenOrder = (table: RestaurantTable) => {
-    navigate(`/orders?tableId=${table.id}&tableName=${encodeURIComponent(table.name)}`);
+    navigate(`/order/${table.id}?name=${encodeURIComponent(table.name)}`);
   };
 
   const handleEdit = (table: RestaurantTable) => {

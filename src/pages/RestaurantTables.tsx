@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate, Link } from 'react-router-dom';
 import { RestaurantTable, TableStatus, CreateTableDto } from '@/types/restaurant-table';
 import { restaurantTablesApi } from '@/services/restaurant-tables-api';
 import { TableCard } from '@/components/restaurant/TableCard';
@@ -9,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Plus, LayoutGrid, RefreshCw, ClipboardList } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 export default function RestaurantTables() {
   const [isAdmin] = useState(true); // In real app, this would come from auth context
@@ -18,6 +18,7 @@ export default function RestaurantTables() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTable, setEditingTable] = useState<RestaurantTable | null>(null);
 
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // Fetch tables
@@ -71,13 +72,11 @@ export default function RestaurantTables() {
 
   // Handlers
   const handleOpenBill = (table: RestaurantTable) => {
-    toast.info(`Отваряне на сметка за ${table.name}`, {
-      description: `Сметка #${table.currentSaleId} - ${table.currentSaleTotal?.toFixed(2)} лв.`,
-    });
+    navigate(`/bill/${table.id}?name=${encodeURIComponent(table.name)}`);
   };
 
   const handleOpenOrder = (table: RestaurantTable) => {
-    toast.info(`Отваряне на поръчка за ${table.name}`);
+    navigate(`/bill/${table.id}?name=${encodeURIComponent(table.name)}`);
   };
 
   const handleEdit = (table: RestaurantTable) => {

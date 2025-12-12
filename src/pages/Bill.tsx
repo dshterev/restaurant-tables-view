@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { billApi } from '@/services/bill-api';
@@ -10,12 +11,14 @@ import { toast } from 'sonner';
 import { ArrowLeft, Receipt, CreditCard, X, Clock, Plus } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { bg } from 'date-fns/locale';
+import { PaymentDialog, PaymentMethod } from '@/components/bill/PaymentDialog';
 
 export default function Bill() {
   const { tableId } = useParams<{ tableId: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
 
   const tableName = searchParams.get('name') || `Маса ${tableId}`;
   const tableIdNum = parseInt(tableId || '0', 10);
@@ -34,11 +37,15 @@ export default function Bill() {
   });
 
   const payMutation = useMutation({
-    mutationFn: () => billApi.pay(bill!.id),
-    onSuccess: () => {
+    mutationFn: (params: { method: PaymentMethod; cashAmount?: number; cardAmount?: number }) => 
+      billApi.pay(bill!.id, params.method, params.cashAmount, params.cardAmount),
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['bill', tableIdNum] });
       queryClient.invalidateQueries({ queryKey: ['restaurant-tables'] });
-      toast.success('Сметката е платена успешно');
+      
+      const methodLabels = { CASH: 'в брой', CARD: 'с карта', SPLIT: 'смесено' };
+      toast.success(`Сметката е платена ${methodLabels[variables.method]}`);
+      setPaymentDialogOpen(false);
       navigate('/tables');
     },
     onError: () => {
@@ -58,6 +65,10 @@ export default function Bill() {
       toast.error('Грешка при анулиране');
     },
   });
+
+  const handlePaymentConfirm = (method: PaymentMethod, cashAmount?: number, cardAmount?: number) => {
+    payMutation.mutate({ method, cashAmount, cardAmount });
+  };
 
   if (isLoading) {
     return (
@@ -195,8 +206,7 @@ export default function Bill() {
                 <Button 
                   className="w-full" 
                   size="lg"
-                  onClick={() => payMutation.mutate()}
-                  disabled={payMutation.isPending}
+                  onClick={() => setPaymentDialogOpen(true)}
                 >
                   <CreditCard className="mr-2 h-5 w-5" />
                   Плати сметката
@@ -215,6 +225,15 @@ export default function Bill() {
           </div>
         </div>
       </div>
+
+      {/* Payment Dialog */}
+      <PaymentDialog
+        open={paymentDialogOpen}
+        onOpenChange={setPaymentDialogOpen}
+        total={bill.total}
+        onConfirm={handlePaymentConfirm}
+        isPending={payMutation.isPending}
+      />
     </div>
   );
 }

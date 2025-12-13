@@ -174,7 +174,7 @@ export default function SalesPos() {
   }
 
   return (
-    <div className="flex h-screen gap-4 bg-background p-4">
+    <div className="flex h-screen gap-6 bg-muted/30 p-6">
       {/* Left Panel - Order Items */}
       <div className="w-[40%]">
         <OrderItemsPanel

@@ -245,7 +245,7 @@ export function ProductsPanel({ onProductSelect }: ProductsPanelProps) {
   };
 
   return (
-    <Card className="flex h-full flex-col">
+    <Card className="flex h-full flex-col border-2 border-border/50 shadow-lg shadow-primary/5">
       <CardHeader className="flex-shrink-0 space-y-4 border-b pb-4">
         {/* Navigation */}
         <div className="flex items-center gap-4">

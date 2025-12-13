@@ -72,11 +72,11 @@ export default function RestaurantTables() {
 
   // Handlers
   const handleOpenBill = (table: RestaurantTable) => {
-    navigate(`/bill/${table.id}?name=${encodeURIComponent(table.name)}`);
+    navigate(`/sales/pos?tableId=${table.id}&tableName=${encodeURIComponent(table.name)}`);
   };
 
   const handleOpenOrder = (table: RestaurantTable) => {
-    navigate(`/order/${table.id}?name=${encodeURIComponent(table.name)}`);
+    navigate(`/sales/pos?tableId=${table.id}&tableName=${encodeURIComponent(table.name)}`);
   };
 
   const handleEdit = (table: RestaurantTable) => {

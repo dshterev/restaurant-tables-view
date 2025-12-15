@@ -28,7 +28,7 @@ export function OrderItemsPanel({
 
   return (
     <Card className="flex h-full flex-col border-2 border-border/50 shadow-lg shadow-primary/5">
-      <CardHeader className="flex-shrink-0 border-b pb-4">
+      <CardHeader className="flex-shrink-0 border-b bg-primary/10 pb-4">
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="sm" onClick={onBack}>
             <ArrowLeft className="mr-2 h-4 w-4" />

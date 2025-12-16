@@ -2,7 +2,7 @@ import { Sale, SaleItem } from '@/types/sale';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Minus, Plus, Trash2, Save, CreditCard, XCircle, ArrowLeft, MessageSquare } from 'lucide-react';
+import { Minus, Plus, Trash2, Save, CreditCard, XCircle, ArrowLeft, MessageSquare, Receipt } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface OrderItemsPanelProps {
@@ -34,13 +34,18 @@ export function OrderItemsPanel({
             <ArrowLeft className="mr-2 h-4 w-4" />
             Маси
           </Button>
-          <div className="text-right">
-            <CardTitle className="text-lg">
-              {sale?.tableName || `Маса ${sale?.tableId}`}
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Статус: <span className="font-medium text-primary">{sale?.status || 'OPEN'}</span>
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
+              <Receipt className="h-5 w-5 text-primary" />
+            </div>
+            <div className="text-right">
+              <CardTitle className="text-lg">
+                {sale?.tableName || `Маса ${sale?.tableId}`}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Статус: <span className="font-medium text-primary">{sale?.status || 'OPEN'}</span>
+              </p>
+            </div>
           </div>
         </div>
       </CardHeader>

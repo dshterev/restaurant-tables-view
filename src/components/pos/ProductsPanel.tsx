@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, Search, X, Package, Grid3X3 } from 'lucide-react';
+import { ArrowLeft, Search, X, Package, Grid3X3, UtensilsCrossed } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -249,6 +249,9 @@ export function ProductsPanel({ onProductSelect }: ProductsPanelProps) {
       <CardHeader className="flex-shrink-0 space-y-4 border-b bg-secondary/50 pb-4">
         {/* Navigation */}
         <div className="flex items-center gap-4">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary">
+            <UtensilsCrossed className="h-5 w-5 text-secondary-foreground" />
+          </div>
           <Button
             variant="ghost"
             size="sm"

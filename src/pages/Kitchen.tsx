@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, ChefHat, Clock, CheckCircle2, Play, RefreshCw } from 'lucide-react';
+import { ArrowLeft, ChefHat, Clock, CheckCircle2, Play, RefreshCw, Printer } from 'lucide-react';
 import { ordersApi } from '@/services/orders-api';
 import { Order, OrderStatus } from '@/types/order';
 import { toast } from 'sonner';
@@ -70,6 +70,45 @@ export default function Kitchen() {
     updateStatusMutation.mutate({ id: order.id, status: 'READY' });
   };
 
+  const handlePrintOrder = (order: Order) => {
+    const printContent = `
+      <html>
+        <head>
+          <title>Поръчка #${order.id}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; max-width: 300px; }
+            h1 { font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+            .table-name { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+            .item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #ccc; }
+            .quantity { font-weight: bold; }
+            .notes { margin-top: 15px; font-style: italic; padding: 10px; background: #f5f5f5; }
+            .time { margin-top: 15px; font-size: 12px; color: #666; }
+          </style>
+        </head>
+        <body>
+          <h1>Поръчка #${order.id}</h1>
+          <div class="table-name">${order.tableName}</div>
+          ${order.items.map(item => `
+            <div class="item">
+              <span><span class="quantity">${item.quantity}x</span> ${item.productName}</span>
+            </div>
+          `).join('')}
+          ${order.notes ? `<div class="notes">Бележка: ${order.notes}</div>` : ''}
+          <div class="time">Време: ${new Date(order.createdAt).toLocaleString('bg-BG')}</div>
+        </body>
+      </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.print();
+      printWindow.close();
+    }
+    toast.success('Поръчката е изпратена за печат');
+  };
+
   const OrderCard = ({ order, showActions = true }: { order: Order; showActions?: boolean }) => {
     const config = statusConfig[order.status];
     const timeAgo = getTimeAgo(order.createdAt);
@@ -101,31 +140,37 @@ export default function Kitchen() {
           {order.notes && (
             <p className="text-sm italic text-muted-foreground">Бележка: {order.notes}</p>
           )}
-          {showActions && (
-            <div className="flex gap-2 pt-2">
-              {order.status === 'PENDING' && (
-                <Button
-                  onClick={() => handleStartOrder(order)}
-                  className="flex-1"
-                  disabled={updateStatusMutation.isPending}
-                >
-                  <Play className="mr-2 h-4 w-4" />
-                  Започни
-                </Button>
-              )}
-              {order.status === 'IN_PROGRESS' && (
-                <Button
-                  onClick={() => handleCompleteOrder(order)}
-                  className="flex-1"
-                  variant="default"
-                  disabled={updateStatusMutation.isPending}
-                >
-                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                  Готово
-                </Button>
-              )}
-            </div>
-          )}
+          <div className="flex gap-2 pt-2">
+            <Button
+              onClick={() => handlePrintOrder(order)}
+              variant="outline"
+              size="icon"
+              title="Отпечатай"
+            >
+              <Printer className="h-4 w-4" />
+            </Button>
+            {showActions && order.status === 'PENDING' && (
+              <Button
+                onClick={() => handleStartOrder(order)}
+                className="flex-1"
+                disabled={updateStatusMutation.isPending}
+              >
+                <Play className="mr-2 h-4 w-4" />
+                Започни
+              </Button>
+            )}
+            {showActions && order.status === 'IN_PROGRESS' && (
+              <Button
+                onClick={() => handleCompleteOrder(order)}
+                className="flex-1"
+                variant="default"
+                disabled={updateStatusMutation.isPending}
+              >
+                <CheckCircle2 className="mr-2 h-4 w-4" />
+                Готово
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
     );

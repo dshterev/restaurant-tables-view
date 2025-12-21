@@ -29,8 +29,7 @@ const features = [
     icon: ChefHat,
     title: 'Кухня',
     description: 'Екран за кухня и приготвяне',
-    href: '#',
-    disabled: true,
+    href: '/kitchen',
   },
   {
     icon: Users,
